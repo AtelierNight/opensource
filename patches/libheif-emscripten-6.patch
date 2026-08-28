@@ -1,0 +1,27 @@
+diff --git a/build-emscripten.sh b/build-emscripten.sh
+index 7fe4749a..604bf296 100755
+--- a/build-emscripten.sh
++++ b/build-emscripten.sh
+@@ -189,7 +189,7 @@ if [ "$USE_ES6" = "1" ]; then
+     BUILD_FLAGS="$BUILD_FLAGS -sEXPORT_ES6"
+ fi
+ 
+-emcc -Wl,--whole-archive "$LIBHEIFA" -Wl,--no-whole-archive \
++em++ -Wl,--whole-archive "$LIBHEIFA" -Wl,--no-whole-archive \
+     -sEXPORTED_FUNCTIONS="$EXPORTED_FUNCTIONS,_free,_malloc,_memcpy" \
+     -sMODULARIZE \
+     -sEXPORT_NAME="libheif" \
+diff --git a/post.js b/post.js
+index 271d39a6..0c55c116 100644
+--- a/post.js
++++ b/post.js
+@@ -155,6 +155,9 @@ var fourcc = function(s) {
+ Module.HeifImage = HeifImage;
+ Module.HeifDecoder = HeifDecoder;
+ Module.fourcc = fourcc;
++Module.de265_get_version = function() {
++    return UTF8ToString(Module._de265_get_version());
++};
+ 
+ // Expose enum values.
+ const enums = [
