@@ -6,7 +6,7 @@ output_dir="$repo_root/dist"
 build_root=$(mktemp -d /tmp/yorukuru-libheif.XXXXXX)
 trap 'rm -rf "$build_root"' EXIT
 
-libheif_commit=ac1cb05c39008f01525c991ff8b88f84ddf70fd2
+libheif_commit=12a259a5882dd99d45ec5fc77e296a3b620d1e2e
 libde265_version=1.1.1
 libde265_sha256=fd48a927e94ed74fc7ce8829d222b9d8599fcbfe8b6448ba66705babc56ab219
 emscripten_image='emscripten/emsdk@sha256:f174124ff798a3ead1abef247d9a849c270b642d552fea500a42565ff210f765'
@@ -26,7 +26,7 @@ test "$actual_libde265" = "$libde265_sha256"
 tar xzf "$libde265_archive" -C "$build_root/libheif/buildjs"
 mkdir "$build_root/libheif/buildjs/libde265-build"
 
-docker run --rm \
+docker run --rm --platform linux/arm64 \
   -v "$build_root/libheif:/src" \
   -w /src/buildjs/libde265-build \
   "$emscripten_image" \
@@ -45,20 +45,20 @@ docker run --rm \
     cp libde265/libde265.a ../libde265-$libde265_version/libde265/.libs/libde265.a && \
     cp libde265/de265-version.h ../libde265-$libde265_version/libde265/de265-version.h"
 
-docker run --rm \
+docker run --rm --platform linux/arm64 \
   -v "$build_root/libheif:/src" \
   -w /src/buildjs \
   "$emscripten_image" \
   bash -lc "CORES=4 LIBDE265_VERSION=$libde265_version USE_WASM=1 USE_ES6=1 USE_TYPESCRIPT=0 USE_UNSAFE_EVAL=0 ../build-emscripten.sh .."
 
-expected_js=b8b1f2fca63c4feb87cbe84b65d266c1c35c94736b27e5a5a3a20d024bcacb56
-expected_wasm=8f6b6c5c04bfeb9a27753ba004b5337fc89edb6ee6acff6743d2b19dfe4b84f0
+expected_js=c75f00a9bc8dc0d98244f0529fe2cce2fd1b44ea91560d0ced5b0dc4f111c722
+expected_wasm=08f173cdfc5eea2c8530d1417cb9823f653851e476245032fd5344205b39458e
 actual_js=$(shasum -a 256 "$build_root/libheif/buildjs/libheif.js" | cut -d ' ' -f 1)
 actual_wasm=$(shasum -a 256 "$build_root/libheif/buildjs/libheif.wasm" | cut -d ' ' -f 1)
 test "$actual_js" = "$expected_js"
 test "$actual_wasm" = "$expected_wasm"
 
-cp "$build_root/libheif/buildjs/libheif.js" "$output_dir/libheif-1.23.2.js"
-cp "$build_root/libheif/buildjs/libheif.wasm" "$output_dir/libheif-1.23.2.wasm"
+cp "$build_root/libheif/buildjs/libheif.js" "$output_dir/libheif-1.23.7.js"
+cp "$build_root/libheif/buildjs/libheif.wasm" "$output_dir/libheif-1.23.7.wasm"
 cp "$build_root/libheif/COPYING" "$repo_root/licenses/libheif-COPYING.txt"
 cp "$build_root/libheif/buildjs/libde265-$libde265_version/COPYING" "$repo_root/licenses/libde265-COPYING.txt"

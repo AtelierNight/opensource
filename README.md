@@ -4,11 +4,13 @@ YORUKURUのブラウザー内HEIC・HEIF画像変換で使用するWebAssembly�
 
 ## 対象
 
-- `libheif` 1.23.2
+- `libheif` 1.23.7
 - `libde265` 1.1.1（HEVC復号）
-- Emscripten `6.0.8`
+- Emscripten `6.0.8`（`linux/arm64`）
 
 ライセンスは`licenses/`、配信済みのビルド成果物は`dist/`、対応ソースと固定版の情報は`source/`、適用パッチは`patches/`、再生成手順は`scripts/`にあります。
+
+`dist/libheif-1.23.2.*`は過去の配布物として保持しています。現行版は`libheif-1.23.7.*`で、YORUKURUの新しいビルドでは現行版を使用します。
 
 ## 再生成
 
